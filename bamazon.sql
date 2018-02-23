@@ -16,3 +16,4 @@ INSERT INTO products (product_name, department_name, price, stock_quantity) VALU
 
 SELECT * FROM products;
 
+ 
