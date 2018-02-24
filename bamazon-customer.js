@@ -35,7 +35,7 @@ connection.query("SELECT item_id, product_name, department_name, price, stock_qu
     console.log(table.toString());
     startShopping()
 
-    connection.end()
+    // connection.end()
 
 });
 
@@ -50,46 +50,83 @@ function startShopping() {
     }]).then(function(answers) {
         var userInput = answers.itemPurch
         var userQuant = answers.itemQuant
+        connection.query("SELECT * FROM products", function(err, res) {
+            if (err) throw err;
 
-        if (parseInt(answers.userQuant) > res.stock_quantity) {
-            connection.query("SELECT * FROM products", function(err, res) {
-                if (err) throw err;
-                // Log all results of the SELECT statement
-                console.log("Sorry, there are only " + res.stock_quantity + " of that item left. Please choose a different amount.\n")
-                startShopping();
-                connection.end();
-            });
-
-        } else if (res.stock_quantity === 0) {
-            ("Sorry we're actually sold out of that :(")
-            startShopping();
-        } else {
-            connection.query(
-                "UPDATE products SET ? WHERE ?", [{
-                        stock_quantity: parseInt(answers.userQuant)
-                    },
-                    {
-                        product_name: answers.itemPurch
+            function getProdName() {
+                for (var i = 0; i < res.length - 1; i++) {
+                    if (parseInt(answers.itemPurch) === res[i].item_id) {
+                        return res[i].product_name
                     }
-                ],
-                function(err, res) {
-                    console.log("Thanks for you purchase! Your item cost $" + res.price);
                 }
-            );
-            inquirer.prompt([{
-                type: "list",
-                name: "continue",
-                choices: ["Yes", "No"],
-                message: "Would you like to continue shopping?\n"
-            }]).then(function(answers) {
-                if (answers.continue === "Yes") {
-                    startShopping();
-                }
-            });
-            
-        }
+            }
 
-    });
+            function getProdQuant() {
+                for (var i = 0; i < res.length - 1; i++) {
+                    if (parseInt(answers.itemPurch) === res[i].item_id) {
+                        return res[i].stock_quantity
+                    }
+                }
+            }
+
+            function getProdPrice() {
+                for (var i = 0; i < res.length - 1; i++) {
+                    if (parseInt(answers.itemPurch) === res[i].item_id) {
+                        return res[i].price
+                    }
+                }
+            }
+
+            if (parseInt(answers.userQuant) > getProdQuant()) {
+
+                console.log("Sorry, there are only " + getProdQuant() + " of that item left. Please choose a different amount.\n")
+                startShopping();
+            } else if (getProdQuant() <= 0) {
+                ("Sorry we're actually sold out of that :(")
+                startShopping();
+            } else {
+                updateStock()
+            };
+// getProdQuant() - parseInt(answers.userQuant)
+// answers.itemPurch
+            function updateStock() {
+              var updateQuant = (getProdQuant() - userQuant)
+                connection.query(
+                    "UPDATE products SET ? WHERE ?", [{
+                            stock_quantity: updateQuant
+                        },
+                        {
+                            item_id: answers.itemPurch
+                        }
+                    ],
+                    function(err, res) {
+                        console.log("\nThanks for you purchase of " + getProdName() + "! Your item cost $" + getProdPrice() + "\n");
+                        console.log(res.affectedRows + " products updated!\n");
+                        restart()
+                    }
+                );
+            }
+
+            function restart() {
+                inquirer.prompt([{
+                    type: "list",
+                    name: "continue",
+                    choices: ["Yes", "No"],
+                    message: "Would you like to continue shopping?\n"
+                }]).then(function(answers) {
+                    if (answers.continue === "Yes") {
+                        startShopping();
+                    } else {
+                        console.log("Thanks for shopping. Please come again");
+                        connection.end();
+                    }
+
+                });
+            }
+            
+
+        });
+    })
 }
 
 
