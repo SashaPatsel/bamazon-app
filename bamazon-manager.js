@@ -16,10 +16,39 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err) {
     if (err) throw err;
+    manageProds()
 });
 
 
-connection.query("SELECT item_id, product_name, department_name, price, stock_quantity FROM products", function(err, res) {
+
+
+
+
+function manageProds() {
+    inquirer.prompt([{
+        type: "list",
+        name: "manageOptions",
+        choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product"],
+        message: "Hello manager, what would you like to do?\n"
+    }]).then(function(answers) {
+        if (answers.manageOptions === "View Products for Sale") {
+          viewProds()
+
+        } else if (answers.manageOptions === "View Low Inventory") {
+          viewLowInv()
+
+        } else if (answers.manageOptions === "Add to Inventory") {
+          addInv()
+
+        }else if (answers.manageOptions === "Add New Product") {
+          addProd()
+        }
+
+    });
+}
+
+function viewProds() {
+  connection.query("SELECT item_id, product_name, department_name, price, stock_quantity FROM products", function(err, res) {
 
     var table = new Table({
         head: ["ID", "Item", "Category", "Price", "Available"],
@@ -34,13 +63,8 @@ connection.query("SELECT item_id, product_name, department_name, price, stock_qu
     }
     console.log(table.toString());
 
-    // connection.end()
-
 });
-
-
-
-
+}
 
 
 
