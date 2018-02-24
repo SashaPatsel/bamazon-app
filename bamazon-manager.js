@@ -66,8 +66,26 @@ function viewProds() {
 });
 }
 
+function viewLowInv(){
+    connection.query("SELECT item_id, product_name, department_name, price, stock_quantity FROM products", function(err, res) {
 
+    var table = new Table({
+        head: ["ID", "Item", "Category", "Price", "Available"],
+        colWidths: [10, 20, 15, 10, 10]
+    });
 
+    // table is an Array, so you can `push`, `unshift`, `splice` and friends 
+    for (var i = 0; i < res.length; i++) {
+      if (res[i].stock_quantity < 2000) {
+        table.push(
+            [res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity],
+        );
+      }
+    }
+    console.log("\nThese are all the items with less than 2000 units left in their inventory:")
+    console.log(table.toString());
+})
+}
 // Create a new Node application called bamazonManager.js. Running this application will:
 // List a set of menu options:
 // View Products for Sale
