@@ -99,7 +99,7 @@ function addInv() {
         var targetItem = answers.itemSelect
         console.log(targetItem)
         connection.query("SELECT * FROM products", function(err, res) {
-          
+
             function getProdQuant() {
                 for (var i = 0; i < res.length; i++) {
                     if (targetItem == res[i].item_id) {
@@ -110,7 +110,7 @@ function addInv() {
             }
 
             var updateQuant = getProdQuant() - answers.newQuant
-            
+
             connection.query(
                 "UPDATE products SET ? WHERE ?", [{
                         stock_quantity: updateQuant
@@ -121,7 +121,7 @@ function addInv() {
                 ],
                 function(err, res) {
                     console.log("\nHere is a review of your update:")
-                    
+
 
                     viewProds()
 
@@ -131,6 +131,38 @@ function addInv() {
     })
 }
 
+function addProd() {
+    console.log("\nPlease fill out this for to add a new item:")
+    inquirer.prompt([{
+        name: "prodName",
+        message: "\nEnter the name of the item you wish to add.\n"
+    }, {
+        name: "depName",
+        message: "What department should this item be added to?\n"
+    }, {
+        name: "pr",
+        message: "How much does this item cost?\n"
+    }, {
+        name: "sq",
+        message: "How much would you like to add to the inventory.\n"
+
+    }]).then(function(answers) {
+
+        var query = connection.query(
+            "INSERT INTO products SET ?", {
+                product_name: answers.prodName,
+                department_name: answers.depName,
+                price: answers.pr,
+                stock_quantity: answers.sq
+            },
+            function(err, res) {
+              console.log("\nHere is the updated inventory:")
+              viewProds()
+            }
+        );
+
+    })
+}
 
 // Create a new Node application called bamazonManager.js. Running this application will:
 // List a set of menu options:
