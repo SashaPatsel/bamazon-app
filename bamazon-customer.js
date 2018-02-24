@@ -53,6 +53,17 @@ function startShopping() {
         connection.query("SELECT * FROM products", function(err, res) {
             if (err) throw err;
 
+            if (userQuant > getProdQuant() && getProdQuant() > 0) {
+
+                console.log("Sorry, there are only " + getProdQuant() + " of that item left. Please choose a different amount.\n")
+                startShopping();
+            } else if (getProdQuant() <= 0) {
+                console.log("Sorry we're actually sold out of that :(")
+                startShopping();
+            } else {
+                updateStock()
+            };
+
             function getProdName() {
                 for (var i = 0; i < res.length - 1; i++) {
                     if (parseInt(answers.itemPurch) === res[i].item_id) {
@@ -77,20 +88,10 @@ function startShopping() {
                 }
             }
 
-            if (parseInt(answers.userQuant) > getProdQuant()) {
 
-                console.log("Sorry, there are only " + getProdQuant() + " of that item left. Please choose a different amount.\n")
-                startShopping();
-            } else if (getProdQuant() <= 0) {
-                ("Sorry we're actually sold out of that :(")
-                startShopping();
-            } else {
-                updateStock()
-            };
-// getProdQuant() - parseInt(answers.userQuant)
-// answers.itemPurch
+
             function updateStock() {
-              var updateQuant = (getProdQuant() - userQuant)
+                var updateQuant = (getProdQuant() - userQuant)
                 connection.query(
                     "UPDATE products SET ? WHERE ?", [{
                             stock_quantity: updateQuant
@@ -123,7 +124,7 @@ function startShopping() {
 
                 });
             }
-            
+
 
         });
     })
@@ -131,12 +132,3 @@ function startShopping() {
 
 
 
-// Running this application will first display all of the items available for sale. Include the ids, names, and prices of products for sale.
-// The app should then prompt users with two messages.
-// The first should ask them the ID of the product they would like to buy.
-// The second message should ask how many units of the product they would like to buy.
-// Once the customer has placed the order, your application should check if your store has enough of the product to meet the customer's request.
-// If not, the app should log a phrase like Insufficient quantity!, and then prevent the order from going through.
-// However, if your store does have enough of the product, you should fulfill the customer's order.
-// This means updating the SQL database to reflect the remaining quantity.
-// Once the update goes through, show the customer the total cost of their purchase.
