@@ -29,7 +29,7 @@ connection.query("SELECT item_id, product_name, department_name, price, stock_qu
     // table is an Array, so you can `push`, `unshift`, `splice` and friends 
     for (var i = 0; i < res.length; i++) {
         table.push(
-            [res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity],
+            [res[i].item_id, res[i].product_name, res[i].department_name, "$"+res[i].price, res[i].stock_quantity],
         );
     }
     console.log(table.toString());
@@ -65,7 +65,7 @@ function startShopping() {
             };
 
             function getProdName() {
-                for (var i = 0; i < res.length - 1; i++) {
+                for (var i = 0; i < res.length; i++) {
                     if (parseInt(answers.itemPurch) === res[i].item_id) {
                         return res[i].product_name
                     }
@@ -73,7 +73,7 @@ function startShopping() {
             }
 
             function getProdQuant() {
-                for (var i = 0; i < res.length - 1; i++) {
+                for (var i = 0; i < res.length; i++) {
                     if (parseInt(answers.itemPurch) === res[i].item_id) {
                         return res[i].stock_quantity
                     }
@@ -81,7 +81,7 @@ function startShopping() {
             }
 
             function getProdPrice() {
-                for (var i = 0; i < res.length - 1; i++) {
+                for (var i = 0; i < res.length; i++) {
                     if (parseInt(answers.itemPurch) === res[i].item_id) {
                         return res[i].price
                     }
