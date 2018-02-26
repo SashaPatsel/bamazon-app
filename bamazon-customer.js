@@ -109,7 +109,8 @@ function startShopping() {
                         }
                     ],
                     function(err, res) {
-                        console.log("\nThanks for you purchase of " + getProdName() + "! Your item cost $" + getProdPrice() + "\n");
+                      var checkOutTotal = getProdPrice() * answers.itemQuant
+                        console.log("\nThanks for you purchase! Your total is $" + checkOutTotal + "\n");
                         console.log(res.affectedRows + " products updated!\n");
                         restart()
                     }
@@ -127,7 +128,7 @@ function startShopping() {
                         }
                     ],
                     function(err, res) {
-                        console.log(updateRev);
+                        // console.log(updateRev);
                     }
                 );
             }

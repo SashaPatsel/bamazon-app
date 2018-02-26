@@ -17,6 +17,19 @@ SELECT * FROM departments;
 
 
 
+CREATE TABLE products (
+  item_id INT(11) AUTO_INCREMENT NOT NULL,
+  product_name VARCHAR(100),
+  department_name VARCHAR(100),
+  price DECIMAL(10,2),
+  stock_quantity INT(20),
+  product_sales INT (20) NULL,
+  PRIMARY KEY (item_id)
+);
+
+
+
+
 
 -- Create a new MySQL table called departments. Your table should include the following columns:
 -- department_id

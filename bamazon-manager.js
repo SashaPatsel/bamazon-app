@@ -64,6 +64,24 @@ function viewProds() {
     });
 }
 
+function viewTable() {
+      connection.query("SELECT item_id, product_name, department_name, price, stock_quantity FROM products", function(err, res) {
+
+        var table = new Table({
+            head: ["ID", "Item", "Category", "Price", "Available"],
+            colWidths: [10, 20, 15, 10, 10]
+        });
+
+        // table is an Array, so you can `push`, `unshift`, `splice` and friends 
+        for (var i = 0; i < res.length; i++) {
+            table.push(
+                [res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity],
+            );
+        }
+        console.log(table.toString());
+    });
+}
+
 function viewLowInv() {
     connection.query("SELECT item_id, product_name, department_name, price, stock_quantity FROM products", function(err, res) {
 
@@ -88,7 +106,7 @@ function viewLowInv() {
 
 
 function addInv() {
-    viewProds()
+    viewTable()
     inquirer.prompt([{
         name: "itemSelect",
         message: "\nPlease select the item you wish to update.\n"
@@ -98,7 +116,6 @@ function addInv() {
     }]).then(function(answers) {
 
         var targetItem = answers.itemSelect
-        console.log(targetItem)
         connection.query("SELECT * FROM products", function(err, res) {
 
             function getProdQuant() {
@@ -110,7 +127,7 @@ function addInv() {
                 }
             }
 
-            var updateQuant = getProdQuant() - answers.newQuant
+            var updateQuant = getProdQuant() + parseInt(answers.newQuant)
 
             connection.query(
                 "UPDATE products SET ? WHERE ?", [{
@@ -123,9 +140,7 @@ function addInv() {
                 function(err, res) {
                     console.log("\nHere is a review of your update:")
 
-
                     viewProds()
-                    restart()
                 }
             );
         })
@@ -133,7 +148,7 @@ function addInv() {
 }
 
 function addProd() {
-    console.log("\nPlease fill out this for to add a new item:")
+    console.log("\nPlease fill out this form to add a new item:")
     inquirer.prompt([{
         name: "prodName",
         message: "\nEnter the name of the item you wish to add.\n"
