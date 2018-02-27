@@ -111,7 +111,6 @@ function startShopping() {
                     function(err, res) {
                       var checkOutTotal = getProdPrice() * answers.itemQuant
                         console.log("\nThanks for you purchase! Your total is $" + checkOutTotal + "\n");
-                        console.log(res.affectedRows + " products updated!\n");
                         restart()
                     }
                 );
