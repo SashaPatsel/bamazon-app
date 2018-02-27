@@ -2,7 +2,7 @@
 
 One Paragraph of project description goes here
 
-<img src="images/demo6.png">
+<img src="images/demo6.png" height="400px" width="300">
 
 ## Getting Started
 
@@ -79,7 +79,7 @@ manager view query example
 
 ## Authors
 
-* **Sasha Patsel** - *Initial work* - [Bamazon](hhtps://githib.com/sashapatsel)
+* **Sasha Patsel** - *Initial work* - [Bamazon](https://github.com/SashaPatsel/bamazon-app)
 
 
 ## Acknowledgments
